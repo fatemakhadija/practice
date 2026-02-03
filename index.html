@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Safai Abhyaan Mission! 🧹</title>
+  
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body, html {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* Prevent scrolling */
+      font-family: 'Montserrat', sans-serif;
+      
+      /* Dusty, dirty background gradient */
+      background: linear-gradient(to bottom right, #8d6e63, #d7ccc8, #a1887f);
+      
+      /* Mobile Fixes */
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    /* Overlay to make it look dusty */
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://www.transparenttextures.com/patterns/dust.png'); /* Subtle dust texture */
+      opacity: 0.4;
+      z-index: -1;
+    }
+
+    /* Floating Background Items (Brooms, Dust, Trash) */
+    .bg-item {
+      position: absolute;
+      top: -10%;
+      font-size: 30px;
+      opacity: 0.5;
+      animation: floatDown 15s linear infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    @keyframes floatDown {
+      0% { transform: translateY(-10vh) translateX(-10vw) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.7; }
+      100% { transform: translateY(110vh) translateX(10vw) rotate(720deg); opacity: 0; }
+    }
+
+    /* Glass Card - Grimy Style */
+    .glass-card {
+      background: rgba(255, 248, 225, 0.8); /* Beige/dirty white tint */
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border-radius: 20px;
+      border: 3px solid #5d4037; /* Brown border */
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(93, 64, 55, 0.5);
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      max-width: 90%;
+      width: 500px;
+    }
+
+    h1 {
+      font-family: 'Fredoka One', cursive;
+      color: #3e2723; /* Dark brown */
+      font-size: 2.2rem;
+      margin-bottom: 25px;
+      text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
+      line-height: 1.3;
+    }
+
+    .btn-container {
+      position: relative;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .btn-custom {
+      border-radius: 15px;
+      padding: 12px 30px;
+      font-size: 1.1rem;
+      font-family: 'Fredoka One', cursive;
+      border: 3px solid #3e2723;
+      box-shadow: 4px 4px 0px #3e2723;
+      cursor: pointer;
+      transition: all 0.1s ease;
+    }
+    
+    .btn-custom:active {
+        box-shadow: 0px 0px 0px #3e2723;
+        transform: translate(4px, 4px);
+    }
+
+    /* YES Button - The "Cleaning" Button */
+    #yesBtn {
+      background-color: #7cb342; /* Grassy/Cleaning Green */
+      color: white;
+      z-index: 100;
+    }
+
+    /* NO Button - The Prank Button */
+    #noBtn {
+      background-color: #ffab91; /* Dusty Orange */
+      color: #bf360c;
+      position: absolute; 
+      right: 10px; 
+      z-index: 9999;
+      transition: none; /* Instant movement */
+      white-space: normal; 
+      max-width: 140px;
+      font-size: 0.9rem;
+      line-height: 1.1;
+      padding: 10px 15px;
+    }
+
+    /* --- Success Screen Styling --- */
+    #success-container {
+      display: none;
+      text-align: center;
+      z-index: 20;
+    }
+
+    #success-container h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 2.5rem;
+      color: #d84315; /* Strong Orange/Red */
+      margin-top: 20px;
+      text-transform: uppercase;
+      text-shadow: 2px 2px 0px #3e2723;
+    }
+
+    /* Composite Image Container */
+    .image-composite {
+        position: relative;
+        width: 300px;
+        height: 300px; /* Fixed height to contain the elements */
+        margin: 0 auto;
+    }
+
+    /* Her Photo */
+    .main-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 20px;
+      border: 5px solid #3e2723;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+
+    /* The Broom Overlay */
+    .broom-overlay {
+        position: absolute;
+        bottom: -30px;
+        right: -40px;
+        width: 180px; /* Adjust size of broom */
+        transform: rotate(-20deg); /* Angle the broom */
+        filter: drop-shadow(5px 5px 5px rgba(0,0,0,0.5));
+        z-index: 10;
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay"></div>
+  <canvas id="confetti-canvas"></canvas>
+
+  <div style="display: flex; justify-content: center; align-items: center; height: 100vh; width: 100%;">
+    
+    <div class="glass-card" id="main-content">
+      <h1>Miss Taiba jhadu safai abhyaan hai? 🧹🧐</h1>
+      
+      <div class="btn-container">
+        <button id="yesBtn" class="btn btn-custom">Haan hu! 😤</button>
+        
+        <button id="noBtn" class="btn btn-custom">Nahi...</button>
+      </div>
+    </div>
+
+    <div class="glass-card" id="success-container">
+      
+      <div class="image-composite">
+          <img src="image_2.png" alt="Taiba" class="main-photo">
+          
+          <img src="https://cdn.pixabay.com/photo/2017/09/08/19/15/broom-2730105_1280.png" alt="Jhadu" class="broom-overlay">
+      </div>
+      
+      <h2>Safai maharani Taiba!!! 👑🧹</h2>
+    </div>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    $(document).ready(function() {
+      
+      // --- Background Floating Dirt Items ---
+      const items = ['🧹', '💨', '🗑️', '💩', '🦠', '🧽'];
+      function createBgItem() {
+        const item = $('<div class="bg-item"></div>');
+        item.text(items[Math.floor(Math.random() * items.length)]);
+        
+        var leftPos = Math.random() * 100;
+        var size = Math.random() * 25 + 15;
+        var duration = Math.random() * 10 + 10;
+        
+        item.css({
+          'left': leftPos + 'vw',
+          'font-size': size + 'px',
+          'animation-duration': duration + 's'
+        });
+        
+        $('body').append(item);
+        setTimeout(() => item.remove(), duration * 1000);
+      }
+      setInterval(createBgItem, 400);
+
+      // --- PRANK TEXT LIST ---
+      const prankTexts = [
+        "Yahan Kitna Ganda Hai!", 
+        "Ghar Kitna Ganda Hai!", 
+        "Tum log gande ho!", 
+        "Kitchen faila hai!", 
+        "Arish gande mein nhaao!", 
+        "Sofia Kitna Ghar failai Hai!", 
+        "Sabaiya tae saaf kar!", 
+        "Love humko jhadu do!", 
+        "Shama to ekadami loor Hai!", 
+        "Safai karbo!", 
+        "Ee kachra feko!", 
+        "Bhai gande mein baithe ho!", 
+        "Khadija jhadu do!", 
+        "Sare Ghar gande Hain!", 
+        "Tum log Kitna kam failati ho!", 
+        "Ghr hai k kura khana!",
+        "Jhadu kaha hai?!",
+        "Pochha lagao jaldi!",
+        "Dustbin full hai!",
+        "Mummy ko bol dunga!",
+        "Safai Abhiyan Zindabad!"
+      ];
+
+      var hasMoved = false;
+
+      function moveButton() {
+        if (!hasMoved) {
+          $('#noBtn').appendTo('body');
+          hasMoved = true;
+        }
+
+        // Change Text randomly
+        var randomText = prankTexts[Math.floor(Math.random() * prankTexts.length)];
+        $('#noBtn').text(randomText);
+
+        // Get Dimensions for safe movement boundaries
+        var btnWidth = $('#noBtn').outerWidth();
+        var btnHeight = $('#noBtn').outerHeight();
+        var windowWidth = $(window).width();
+        var windowHeight = $(window).height();
+
+        // Safety margin of 30px
+        var maxLeft = windowWidth - btnWidth - 30;
+        var maxTop = windowHeight - btnHeight - 30;
+
+        if (maxLeft < 0) maxLeft = 0;
+        if (maxTop < 0) maxTop = 0;
+
+        // Generate random coordinates
+        var newLeft = Math.random() * (maxLeft - 30) + 30;
+        var newTop = Math.random() * (maxTop - 30) + 30;
+
+        // Apply Position
+        $('#noBtn').css({
+          'position': 'fixed',
+          'left': newLeft + 'px',
+          'top': newTop + 'px',
+          'right': 'auto'
+        });
+      }
+
+      // --- INTERACTION HANDLING ---
+      $('#noBtn').on('mouseenter touchstart', function(e) {
+        e.preventDefault();
+        moveButton();
+      });
+
+      $('#noBtn').click(function(e) {
+        e.preventDefault();
+        moveButton();
+      });
+
+      // --- YES BUTTON (REVEAL PRANK) ---
+      $('#yesBtn').click(function() {
+        $('#noBtn').remove(); // Remove the prank button
+        
+        $('#main-content').fadeOut(500, function() {
+          $('#success-container').fadeIn(500);
+          
+          // Dirt Colored Confetti!
+          var duration = 4000;
+          var animationEnd = Date.now() + duration;
+          var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+          var interval = setInterval(function() {
+            var timeLeft = animationEnd - Date.now();
+            if (timeLeft <= 0) return clearInterval(interval);
+            var particleCount = 50 * (timeLeft / duration);
+            
+            // Using "Dirt" colors: Browns, Greys, Beige
+            var dirtColors = ['#5d4037', '#8d6e63', '#d7ccc8', '#795548', '#a1887f'];
+            
+            confetti(Object.assign({}, defaults, { 
+                particleCount, 
+                colors: dirtColors,
+                origin: { x: Math.random() * 0.2 + 0.1, y: Math.random() - 0.2 } 
+            }));
+            confetti(Object.assign({}, defaults, { 
+                particleCount, 
+                colors: dirtColors,
+                origin: { x: Math.random() * 0.2 + 0.7, y: Math.random() - 0.2 } 
+            }));
+          }, 250);
+        });
+      });
+
+    });
+  </script>
+
+</body>
+</html>
