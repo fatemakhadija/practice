@@ -16,63 +16,57 @@
       padding: 0;
       overflow: hidden;
       font-family: 'Montserrat', sans-serif;
-      
-      /* --- WALLPAPER: Messy Crumpled Paper/Trash (Very Stable Unsplash Source) --- */
-      background: url('https://images.unsplash.com/photo-1584713503693-bb386ec95cf2?q=80&w=1974&auto=format&fit=crop') no-repeat center center fixed;
-      background-size: cover;
+      background-color: #4e342e; /* Dark Brown Base */
       
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
 
-    /* Dark overlay for text readability */
-    .overlay {
+    /* --- ANIMATED WALLPAPER (CSS) --- */
+    /* This creates a scrolling 'dirty' texture effect */
+    .animated-bg {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.4); 
-      z-index: -1;
+      /* Crumpled paper texture */
+      background: url('https://images.unsplash.com/photo-1584713503693-bb386ec95cf2?q=80&w=1974&auto=format&fit=crop');
+      background-size: cover;
+      opacity: 0.6;
+      z-index: -2;
     }
 
-    /* Floating Trash Items */
+    /* --- FLOATING TRASH ANIMATION --- */
+    /* This container will hold all the falling garbage */
+    #trash-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
     .bg-item {
       position: absolute;
       top: -10%;
-      font-size: 35px;
-      opacity: 0.8;
-      animation: floatDown 15s linear infinite;
+      opacity: 0.9;
       z-index: 0;
       pointer-events: none;
-      text-shadow: 2px 2px 4px #000;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     }
 
-    @keyframes floatDown {
-      0% { transform: translateY(-10vh) translateX(-10vw) rotate(0deg); opacity: 0; }
-      10% { opacity: 1; }
-      100% { transform: translateY(110vh) translateX(10vw) rotate(720deg); opacity: 0; }
-    }
-
-    /* --- GREY DUSTBIN CARD DESIGN --- */
+    /* --- DUSTBIN CARD --- */
     .dustbin-card {
-      /* Base Grey Color */
-      background-color: #616161; 
+      background-color: #616161; /* Grey Bin */
+      /* Plastic texture */
+      background-image: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(0,0,0,0.2) 20px, rgba(0,0,0,0.2) 25px);
       
-      /* Vertical Ridges Texture (Plastic Bin Look) */
-      background-image: repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 20px,
-        rgba(0, 0, 0, 0.2) 20px,
-        rgba(0, 0, 0, 0.2) 25px
-      );
-      
-      /* Tapered Shape: Wider top, narrower bottom */
       border-radius: 10px 10px 50px 50px;
-      
-      /* Thick Top Rim (The "Lip" of the bin) */
-      border-top: 25px solid #424242;
+      border-top: 25px solid #424242; /* Bin Rim */
       border-left: 5px solid #424242;
       border-right: 5px solid #424242;
       border-bottom: 5px solid #424242;
@@ -83,11 +77,11 @@
       position: relative;
       z-index: 10;
       max-width: 90%;
-      width: 400px; /* Slightly narrower to look like a bin */
+      width: 400px;
       color: white;
     }
 
-    /* Add handles to the side using pseudo-elements */
+    /* Handles */
     .dustbin-card::before, .dustbin-card::after {
         content: '';
         position: absolute;
@@ -108,7 +102,7 @@
       margin-bottom: 25px;
       text-shadow: 2px 2px 4px #000;
       line-height: 1.3;
-      border-bottom: 2px dashed rgba(255,255,255,0.3); /* Divider line */
+      border-bottom: 2px dashed rgba(255,255,255,0.3);
       padding-bottom: 15px;
     }
 
@@ -126,14 +120,14 @@
       padding: 12px 30px;
       font-size: 1.1rem;
       font-family: 'Fredoka One', cursive;
-      border: 2px solid #bdbdbd; /* Silver border */
+      border: 2px solid #bdbdbd;
       box-shadow: 0 5px 10px rgba(0,0,0,0.4);
       cursor: pointer;
       transition: all 0.1s ease;
     }
 
     #yesBtn {
-      background-color: #757575; /* Lighter Grey */
+      background-color: #757575;
       color: #fff; 
       z-index: 100;
     }
@@ -177,7 +171,7 @@
         padding: 8px;
         border-radius: 10px;
         box-shadow: 0 0 15px rgba(0,0,0,0.5);
-        transform: rotate(-2deg); /* Slight tilt like a photo thrown in bin */
+        transform: rotate(-2deg);
     }
 
     .main-photo {
@@ -213,7 +207,10 @@
 </head>
 <body>
 
-  <div class="overlay"></div>
+  <div class="animated-bg"></div>
+  
+  <div id="trash-container"></div>
+  
   <canvas id="confetti-canvas"></canvas>
 
   <div style="display: flex; justify-content: center; align-items: center; height: 100vh; width: 100%;">
@@ -247,23 +244,44 @@
   <script>
     $(document).ready(function() {
       
-      // --- Floating Background Items ---
-      const items = ['🧹', '💨', '🗑️', '💩', '🦠', '🧽', '🥡', '🧴'];
+      // --- ANIMATED WALLPAPER GENERATOR ---
+      // This script creates the falling trash effect automatically
+      const items = ['🧹', '💨', '🗑️', '💩', '🦠', '🧽', '🥡', '🧴', '🍌', '📄'];
+      
       function createBgItem() {
         const item = $('<div class="bg-item"></div>');
         item.text(items[Math.floor(Math.random() * items.length)]);
+        
+        // Randomize start position
         var leftPos = Math.random() * 100;
-        var size = Math.random() * 25 + 15;
-        var duration = Math.random() * 10 + 10;
+        var size = Math.random() * 30 + 20; // Size between 20px and 50px
+        var duration = Math.random() * 5 + 5; // Fast fall (5-10 seconds)
+        var rotateEnd = Math.random() * 360; // Random rotation
+        
         item.css({
           'left': leftPos + 'vw',
           'font-size': size + 'px',
-          'animation-duration': duration + 's'
+          'transition': 'top ' + duration + 's linear, transform ' + duration + 's linear',
+          'top': '-10%',
+          'transform': 'rotate(0deg)'
         });
-        $('body').append(item);
+        
+        $('#trash-container').append(item);
+        
+        // Trigger animation frame
+        setTimeout(function() {
+          item.css({
+            'top': '110%', // Move to bottom
+            'transform': 'rotate(' + rotateEnd + 'deg)'
+          });
+        }, 100);
+
+        // Cleanup after animation
         setTimeout(() => item.remove(), duration * 1000);
       }
-      setInterval(createBgItem, 300); // More items for messier look
+
+      // Create a lot of trash falling quickly!
+      setInterval(createBgItem, 200);
 
       // --- PRANK TEXTS ---
       const prankTexts = [
