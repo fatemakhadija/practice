@@ -16,29 +16,33 @@
       padding: 0;
       overflow: hidden;
       font-family: 'Montserrat', sans-serif;
-      background-color: #4e342e; /* Dark Brown Base */
+      
+      /* --- NEW BACKGROUND: CSS ONLY (No Image Link to Break!) --- */
+      /* Creates a dirty floor look using gradients */
+      background-color: #5d4037;
+      background-image: 
+        radial-gradient(#795548 15%, transparent 16%),
+        radial-gradient(#8d6e63 15%, transparent 16%);
+      background-size: 60px 60px;
+      background-position: 0 0, 30px 30px;
       
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
 
-    /* --- ANIMATED WALLPAPER (CSS) --- */
-    /* This creates a scrolling 'dirty' texture effect */
-    .animated-bg {
+    /* Dark vignette overlay to focus on the center */
+    .overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      /* Crumpled paper texture */
-      background: url('https://images.unsplash.com/photo-1584713503693-bb386ec95cf2?q=80&w=1974&auto=format&fit=crop');
-      background-size: cover;
-      opacity: 0.6;
-      z-index: -2;
+      background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.6) 100%);
+      z-index: -1;
+      pointer-events: none;
     }
 
     /* --- FLOATING TRASH ANIMATION --- */
-    /* This container will hold all the falling garbage */
     #trash-container {
       position: absolute;
       top: 0;
@@ -46,60 +50,59 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: -1;
+      z-index: 0; 
       overflow: hidden;
     }
 
     .bg-item {
       position: absolute;
-      top: -10%;
+      top: -15%; /* Start slightly higher */
       opacity: 0.9;
       z-index: 0;
       pointer-events: none;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      /* Add a glow to make them visible */
+      filter: drop-shadow(0px 0px 5px rgba(255,255,255,0.3)); 
     }
 
     /* --- DUSTBIN CARD --- */
     .dustbin-card {
       background-color: #616161; /* Grey Bin */
-      /* Plastic texture */
+      /* Plastic Texture */
       background-image: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(0,0,0,0.2) 20px, rgba(0,0,0,0.2) 25px);
       
-      border-radius: 10px 10px 50px 50px;
-      border-top: 25px solid #424242; /* Bin Rim */
-      border-left: 5px solid #424242;
-      border-right: 5px solid #424242;
-      border-bottom: 5px solid #424242;
+      border-radius: 10px 10px 40px 40px;
+      border-top: 25px solid #424242; /* Lid Rim */
+      border-bottom: 8px solid #424242;
       
-      padding: 30px;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+      padding: 25px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.9);
       text-align: center;
       position: relative;
       z-index: 10;
       max-width: 90%;
-      width: 400px;
+      width: 380px;
       color: white;
     }
 
-    /* Handles */
+    /* Bin Handles */
     .dustbin-card::before, .dustbin-card::after {
         content: '';
         position: absolute;
         top: 60px;
-        width: 15px;
-        height: 40px;
+        width: 12px;
+        height: 35px;
         background: #424242;
-        border-radius: 5px;
-        box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5);
+        border-radius: 4px;
+        box-shadow: inset 1px 1px 3px rgba(0,0,0,0.5);
     }
-    .dustbin-card::before { left: -15px; }
-    .dustbin-card::after { right: -15px; }
+    .dustbin-card::before { left: -12px; }
+    .dustbin-card::after { right: -12px; }
 
     h1 {
       font-family: 'Fredoka One', cursive;
       color: #fff;
-      font-size: 1.8rem;
-      margin-bottom: 25px;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
       text-shadow: 2px 2px 4px #000;
       line-height: 1.3;
       border-bottom: 2px dashed rgba(255,255,255,0.3);
@@ -108,17 +111,17 @@
 
     .btn-container {
       position: relative;
-      height: 100px;
+      height: 90px;
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 15px;
+      gap: 10px;
     }
 
     .btn-custom {
       border-radius: 10px;
-      padding: 12px 30px;
-      font-size: 1.1rem;
+      padding: 10px 25px;
+      font-size: 1rem;
       font-family: 'Fredoka One', cursive;
       border: 2px solid #bdbdbd;
       box-shadow: 0 5px 10px rgba(0,0,0,0.4);
@@ -131,20 +134,19 @@
       color: #fff; 
       z-index: 100;
     }
-    #yesBtn:hover { background-color: #9e9e9e; }
-
+    
     #noBtn {
-      background-color: #d84315; /* Warning Orange */
+      background-color: #d84315; /* Orange */
       color: #fff;
       position: absolute; 
-      right: 10px; 
+      right: 5px; 
       z-index: 9999;
       transition: none; 
       white-space: normal; 
-      max-width: 140px;
-      font-size: 0.9rem;
+      max-width: 130px;
+      font-size: 0.85rem;
       line-height: 1.1;
-      padding: 10px 15px;
+      padding: 8px 12px;
     }
 
     #success-container {
@@ -155,20 +157,20 @@
 
     #success-container h2 {
       font-family: 'Fredoka One', cursive;
-      font-size: 2.2rem;
-      color: #ffca28; /* Gold/Yellow text */
-      margin-top: 20px;
+      font-size: 2rem;
+      color: #ffca28; /* Gold */
+      margin-top: 25px;
       text-transform: uppercase;
       text-shadow: 3px 3px 0px #000;
     }
 
     .image-composite {
         position: relative;
-        width: 260px;
-        height: 260px;
+        width: 250px;
+        height: 250px;
         margin: 0 auto;
         background: #fff;
-        padding: 8px;
+        padding: 6px;
         border-radius: 10px;
         box-shadow: 0 0 15px rgba(0,0,0,0.5);
         transform: rotate(-2deg);
@@ -182,15 +184,15 @@
       border: 1px solid #ccc;
     }
 
-    /* --- BROOM ICON --- */
+    /* --- BROOM ICON (Made Bigger & On Top) --- */
     .broom-overlay {
         position: absolute;
-        bottom: -20px;
-        right: -40px;
-        width: 150px; 
-        transform: rotate(-10deg);
+        bottom: -30px;
+        right: -50px;
+        width: 160px; /* Bigger */
+        transform: rotate(-15deg);
         filter: drop-shadow(5px 5px 5px rgba(0,0,0,0.5));
-        z-index: 20;
+        z-index: 100; /* Ensure it's on top of photo */
         pointer-events: none;
     }
 
@@ -201,13 +203,13 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 9999;
+      z-index: 99999; /* Max Z-Index to stay on top */
     }
   </style>
 </head>
 <body>
 
-  <div class="animated-bg"></div>
+  <div class="overlay"></div>
   
   <div id="trash-container"></div>
   
@@ -239,49 +241,50 @@
   </div>
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
     $(document).ready(function() {
       
-      // --- ANIMATED WALLPAPER GENERATOR ---
-      // This script creates the falling trash effect automatically
-      const items = ['🧹', '💨', '🗑️', '💩', '🦠', '🧽', '🥡', '🧴', '🍌', '📄'];
+      // --- ANIMATED BACKGROUND: FALLING TRASH ---
+      const items = ['🧹', '💨', '🗑️', '💩', '🦠', '🧽', '🥡', '🧴', '🍌', '📄', '🪰'];
       
       function createBgItem() {
         const item = $('<div class="bg-item"></div>');
         item.text(items[Math.floor(Math.random() * items.length)]);
         
         // Randomize start position
-        var leftPos = Math.random() * 100;
-        var size = Math.random() * 30 + 20; // Size between 20px and 50px
-        var duration = Math.random() * 5 + 5; // Fast fall (5-10 seconds)
-        var rotateEnd = Math.random() * 360; // Random rotation
+        var leftPos = Math.random() * 100; // 0 to 100% width
+        var size = Math.random() * 40 + 20; // Bigger sizes: 20px to 60px
+        var duration = Math.random() * 5 + 4; // 4 to 9 seconds
+        var rotateStart = Math.random() * 360;
+        var rotateEnd = Math.random() * 360;
         
         item.css({
           'left': leftPos + 'vw',
           'font-size': size + 'px',
+          'transform': 'rotate(' + rotateStart + 'deg)',
           'transition': 'top ' + duration + 's linear, transform ' + duration + 's linear',
-          'top': '-10%',
-          'transform': 'rotate(0deg)'
+          'top': '-15%'
         });
         
         $('#trash-container').append(item);
         
-        // Trigger animation frame
+        // Trigger animation
         setTimeout(function() {
           item.css({
-            'top': '110%', // Move to bottom
+            'top': '110%', 
             'transform': 'rotate(' + rotateEnd + 'deg)'
           });
-        }, 100);
+        }, 50);
 
-        // Cleanup after animation
-        setTimeout(() => item.remove(), duration * 1000);
+        // Remove element after animation finishes
+        setTimeout(() => item.remove(), (duration + 1) * 1000);
       }
 
-      // Create a lot of trash falling quickly!
-      setInterval(createBgItem, 200);
+      // Create items frequently
+      setInterval(createBgItem, 300);
+
 
       // --- PRANK TEXTS ---
       const prankTexts = [
@@ -314,14 +317,15 @@
         var windowWidth = $(window).width();
         var windowHeight = $(window).height();
 
-        var maxLeft = windowWidth - btnWidth - 30;
-        var maxTop = windowHeight - btnHeight - 30;
+        // Safety margins
+        var maxLeft = windowWidth - btnWidth - 20;
+        var maxTop = windowHeight - btnHeight - 20;
 
         if (maxLeft < 0) maxLeft = 0;
         if (maxTop < 0) maxTop = 0;
 
-        var newLeft = Math.random() * (maxLeft - 30) + 30;
-        var newTop = Math.random() * (maxTop - 30) + 30;
+        var newLeft = Math.random() * (maxLeft - 20) + 20;
+        var newTop = Math.random() * (maxTop - 20) + 20;
 
         $('#noBtn').css({
           'position': 'fixed',
@@ -331,6 +335,7 @@
         });
       }
 
+      // Handle touch and click for No button
       $('#noBtn').on('mouseenter touchstart', function(e) {
         e.preventDefault();
         moveButton();
@@ -341,24 +346,25 @@
         moveButton();
       });
 
-      // --- YES BUTTON ---
+      // --- YES BUTTON (CONFETTI TRIGGER) ---
       $('#yesBtn').click(function() {
         $('#noBtn').remove(); 
         
         $('#main-content').fadeOut(500, function() {
           $('#success-container').fadeIn(500);
           
+          // --- CONFETTI EXPLOSION ---
           var duration = 4000;
           var animationEnd = Date.now() + duration;
-          var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+          var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 99999 };
 
           var interval = setInterval(function() {
             var timeLeft = animationEnd - Date.now();
             if (timeLeft <= 0) return clearInterval(interval);
             var particleCount = 50 * (timeLeft / duration);
             
-            // "Trash" colors for confetti (Grey, Brown, Green)
-            var trashColors = ['#616161', '#795548', '#2e7d32', '#9e9e9e', '#a1887f'];
+            // Trash Colors: Grey, Brown, Green, Rusty Orange
+            var trashColors = ['#616161', '#795548', '#2e7d32', '#d84315', '#a1887f'];
             
             confetti(Object.assign({}, defaults, { 
                 particleCount, 
